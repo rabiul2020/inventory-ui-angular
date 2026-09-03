@@ -1,0 +1,142 @@
+<div class="container-fluid py-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+      Stock
+    </h2>
+
+  </div>
+
+
+  <!-- Error Message -->
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger">
+
+    {{ errorMessage }}
+
+  </div>
+
+
+  <!-- Stock List -->
+  <div class="card">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+        Current Stock
+      </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <div class="table-responsive">
+
+        <table
+          class="table table-bordered table-hover align-middle mb-0">
+
+          <thead class="table-light">
+
+            <tr>
+
+              <th>
+                #
+              </th>
+
+              <th>
+                Product
+              </th>
+
+              <th class="text-end">
+                Current Stock
+              </th>
+
+              <th class="text-end">
+                Cost Price
+              </th>
+
+              <th class="text-end">
+                Stock Value
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let stock of stocks;
+                let i = index
+              ">
+
+              <td>
+                {{ i + 1 }}
+              </td>
+
+
+              <td>
+                {{ stock.productName }}
+              </td>
+
+
+              <td class="text-end fw-semibold">
+
+                {{ stock.currentStock
+                   | number:'1.2-2' }}
+
+              </td>
+
+
+              <td class="text-end">
+
+                {{ stock.costPrice
+                   | number:'1.2-2' }}
+
+              </td>
+
+
+              <td class="text-end fw-semibold">
+
+                {{
+                  stock.currentStock *
+                  stock.costPrice
+                  | number:'1.2-2'
+                }}
+
+              </td>
+
+            </tr>
+
+
+            <!-- Empty -->
+            <tr
+              *ngIf="stocks.length === 0">
+
+              <td
+                colspan="5"
+                class="text-center text-muted py-4">
+
+                No stock found.
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

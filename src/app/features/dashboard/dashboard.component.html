@@ -1,0 +1,793 @@
+<div class="container-fluid dashboard-page">
+
+  <!-- ========================= -->
+  <!-- Header -->
+  <!-- ========================= -->
+
+  <div class="dashboard-header">
+
+    <div>
+      <h3 class="dashboard-title">
+        Dashboard
+      </h3>
+
+      <p class="dashboard-subtitle">
+        Inventory overview and today's business summary
+      </p>
+    </div>
+
+    <button
+      type="button"
+      class="btn dashboard-refresh-btn"
+      (click)="loadDashboard()">
+
+      <i class="fa fa-refresh me-2"></i>
+      Refresh
+
+    </button>
+
+  </div>
+
+
+  <!-- ========================= -->
+  <!-- Error -->
+  <!-- ========================= -->
+
+  <div
+    *ngIf="errorMessage"
+    class="alert dashboard-alert">
+
+    <i class="fa fa-exclamation-circle me-2"></i>
+
+    {{ errorMessage }}
+
+  </div>
+
+
+
+  <!-- ========================= -->
+  <!-- Overview Cards -->
+  <!-- ========================= -->
+
+  <div
+    class="row g-3"
+    *ngIf="summary">
+
+
+    <!-- Products -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="dashboard-stat-card">
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Total Products
+          </span>
+
+          <h3 class="stat-value">
+            {{ summary.totalProducts | number }}
+          </h3>
+
+          <span class="stat-description">
+            Products in inventory
+          </span>
+
+        </div>
+
+        <div class="stat-icon">
+          <i class="fa fa-cubes"></i>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Customers -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="dashboard-stat-card">
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Total Customers
+          </span>
+
+          <h3 class="stat-value">
+            {{ summary.totalCustomers | number }}
+          </h3>
+
+          <span class="stat-description">
+            Registered customers
+          </span>
+
+        </div>
+
+        <div class="stat-icon">
+          <i class="fa fa-users"></i>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Suppliers -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="dashboard-stat-card">
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Total Suppliers
+          </span>
+
+          <h3 class="stat-value">
+            {{ summary.totalSuppliers | number }}
+          </h3>
+
+          <span class="stat-description">
+            Registered suppliers
+          </span>
+
+        </div>
+
+        <div class="stat-icon">
+          <i class="fa fa-truck"></i>
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Stock -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="dashboard-stat-card">
+
+        <div class="stat-content">
+
+          <span class="stat-label">
+            Total Stock
+          </span>
+
+          <h3 class="stat-value">
+            {{
+              summary.totalStockQuantity
+              | number:'1.0-2'
+            }}
+          </h3>
+
+          <span class="stat-description">
+            Current stock quantity
+          </span>
+
+        </div>
+
+        <div class="stat-icon">
+          <i class="fa fa-archive"></i>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ========================= -->
+  <!-- Today's Business -->
+  <!-- ========================= -->
+
+  <div
+    class="section-heading"
+    *ngIf="summary">
+
+    <div>
+      <h5>
+        Today's Business
+      </h5>
+
+      <span>
+        Today's purchase and sales overview
+      </span>
+    </div>
+
+  </div>
+
+
+  <div
+    class="row g-3"
+    *ngIf="summary">
+
+
+    <!-- Purchase -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="financial-card purchase-card">
+
+        <div class="financial-icon">
+          <i class="fa fa-shopping-cart"></i>
+        </div>
+
+        <div>
+
+          <span class="financial-label">
+            Today's Purchase
+          </span>
+
+          <h4>
+            ৳ {{
+              summary.todayPurchase
+              | number:'1.2-2'
+            }}
+          </h4>
+
+          <small>
+            Purchase amount today
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Sales -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="financial-card sales-card">
+
+        <div class="financial-icon">
+          <i class="fa fa-line-chart"></i>
+        </div>
+
+        <div>
+
+          <span class="financial-label">
+            Today's Sales
+          </span>
+
+          <h4>
+            ৳ {{
+              summary.todaySales
+              | number:'1.2-2'
+            }}
+          </h4>
+
+          <small>
+            Sales amount today
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Purchase Return -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="financial-card return-card">
+
+        <div class="financial-icon">
+          <i class="fa fa-undo"></i>
+        </div>
+
+        <div>
+
+          <span class="financial-label">
+            Purchase Return
+          </span>
+
+          <h4>
+            ৳ {{
+              summary.todayPurchaseReturn
+              | number:'1.2-2'
+            }}
+          </h4>
+
+          <small>
+            Returned purchase amount
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Sales Return -->
+
+    <div class="col-xl-3 col-md-6">
+
+      <div class="financial-card sales-return-card">
+
+        <div class="financial-icon">
+          <i class="fa fa-reply"></i>
+        </div>
+
+        <div>
+
+          <span class="financial-label">
+            Sales Return
+          </span>
+
+          <h4>
+            ৳ {{
+              summary.todaySalesReturn
+              | number:'1.2-2'
+            }}
+          </h4>
+
+          <small>
+            Returned sales amount
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ========================= -->
+  <!-- Stock Overview -->
+  <!-- ========================= -->
+
+  <div
+    class="row g-3 mt-1"
+    *ngIf="summary">
+
+
+    <!-- Quantity -->
+
+    <div class="col-xl-6">
+
+      <div class="stock-overview-card">
+
+        <div class="stock-overview-icon">
+          <i class="fa fa-database"></i>
+        </div>
+
+        <div class="stock-overview-content">
+
+          <span>
+            Total Stock Quantity
+          </span>
+
+          <h4>
+            {{
+              summary.totalStockQuantity
+              | number:'1.2-2'
+            }}
+          </h4>
+
+          <small>
+            Current inventory quantity
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- Value -->
+
+    <div class="col-xl-6">
+
+      <div class="stock-overview-card">
+
+        <div class="stock-overview-icon">
+          <i class="fa fa-money"></i>
+        </div>
+
+        <div class="stock-overview-content">
+
+          <span>
+            Total Stock Value
+          </span>
+
+          <h4>
+            ৳ {{
+              summary.totalStockValue
+              | number:'1.2-2'
+            }}
+          </h4>
+
+          <small>
+            Current inventory valuation
+          </small>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- ========================= -->
+  <!-- Tables -->
+  <!-- ========================= -->
+
+  <div
+    class="row g-3 mt-1"
+    *ngIf="summary">
+
+
+    <!-- ========================= -->
+    <!-- Low Stock -->
+    <!-- ========================= -->
+
+    <div class="col-xl-5">
+
+      <div class="dashboard-panel h-100">
+
+        <!-- Panel Header -->
+
+        <div class="panel-header">
+
+          <div class="panel-title-area">
+
+            <div class="panel-icon warning-icon">
+              <i class="fa fa-warning"></i>
+            </div>
+
+            <div>
+
+              <h6>
+                Low Stock Products
+              </h6>
+
+              <small>
+                Products below minimum level
+              </small>
+
+            </div>
+
+          </div>
+
+          <span class="count-badge">
+            {{ summary.lowStockProducts }}
+          </span>
+
+        </div>
+
+
+        <!-- Table -->
+
+        <div class="panel-body p-0">
+
+          <div class="table-responsive">
+
+            <table
+              class="table dashboard-table mb-0">
+
+              <thead>
+
+                <tr>
+
+                  <th class="ps-3">
+                    Product
+                  </th>
+
+                  <th>
+                    Current
+                  </th>
+
+                  <th>
+                    Minimum
+                  </th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr
+                  *ngFor="
+                    let product
+                    of lowStockProducts
+                  ">
+
+                  <td class="ps-3">
+
+                    <div class="product-name">
+                      {{ product.productName }}
+                    </div>
+
+                  </td>
+
+                  <td>
+
+                    <span class="stock-danger">
+
+                      {{
+                        product.currentQuantity
+                        | number:'1.0-2'
+                      }}
+
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <span class="minimum-stock">
+
+                      {{
+                        product.minimumStockLevel
+                        | number:'1.0-2'
+                      }}
+
+                    </span>
+
+                  </td>
+
+                </tr>
+
+
+                <!-- Empty -->
+
+                <tr
+                  *ngIf="
+                    lowStockProducts.length === 0
+                  ">
+
+                  <td
+                    colspan="3"
+                    class="empty-state">
+
+                    <i class="fa fa-check-circle"></i>
+
+                    <span>
+                      All products have sufficient stock.
+                    </span>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- ========================= -->
+    <!-- Recent Transactions -->
+    <!-- ========================= -->
+
+    <div class="col-xl-7">
+
+      <div class="dashboard-panel h-100">
+
+        <!-- Header -->
+
+        <div class="panel-header">
+
+          <div class="panel-title-area">
+
+            <div class="panel-icon transaction-icon">
+              <i class="fa fa-exchange"></i>
+            </div>
+
+            <div>
+
+              <h6>
+                Recent Transactions
+              </h6>
+
+              <small>
+                Latest inventory transactions
+              </small>
+
+            </div>
+
+          </div>
+
+          <span class="transaction-count">
+            Latest 10
+          </span>
+
+        </div>
+
+
+        <!-- Table -->
+
+        <div class="panel-body p-0">
+
+          <div class="table-responsive">
+
+            <table
+              class="table dashboard-table mb-0">
+
+              <thead>
+
+                <tr>
+
+                  <th class="ps-3">
+                    Type
+                  </th>
+
+                  <th>
+                    Number
+                  </th>
+
+                  <th>
+                    Date
+                  </th>
+
+                  <th class="text-end pe-3">
+                    Amount
+                  </th>
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                <tr
+                  *ngFor="
+                    let transaction
+                    of recentTransactions
+                  ">
+
+
+                  <!-- Type -->
+
+                  <td class="ps-3">
+
+                    <span
+                      class="transaction-badge"
+                      [ngClass]="
+                        transaction.transactionType
+                        === 'Purchase'
+                          ? 'purchase-badge'
+                          : 'sales-badge'
+                      ">
+
+                      <i
+                        class="fa"
+                        [ngClass]="
+                          transaction.transactionType
+                          === 'Purchase'
+                            ? 'fa-shopping-cart'
+                            : 'fa-line-chart'
+                        ">
+                      </i>
+
+                      {{
+                        transaction.transactionType
+                      }}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- Number -->
+
+                  <td>
+
+                    <span class="transaction-number">
+
+                      {{
+                        transaction.transactionNumber
+                      }}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- Date -->
+
+                  <td>
+
+                    <span class="transaction-date">
+
+                      {{
+                        transaction.transactionDate
+                        | date:'dd-MMM-yyyy'
+                      }}
+
+                    </span>
+
+                  </td>
+
+
+                  <!-- Amount -->
+
+                  <td class="text-end pe-3">
+
+                    <span class="transaction-amount">
+
+                      ৳ {{
+                        transaction.amount
+                        | number:'1.2-2'
+                      }}
+
+                    </span>
+
+                  </td>
+
+                </tr>
+
+
+                <!-- Empty -->
+
+                <tr
+                  *ngIf="
+                    recentTransactions.length === 0
+                  ">
+
+                  <td
+                    colspan="4"
+                    class="empty-state">
+
+                    <i class="fa fa-file-text-o"></i>
+
+                    <span>
+                      No recent transactions.
+                    </span>
+
+                  </td>
+
+                </tr>
+
+              </tbody>
+
+            </table>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

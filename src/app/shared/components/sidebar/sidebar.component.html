@@ -1,0 +1,81 @@
+<ng-container *ngFor="let menu of menus">
+
+  <!-- Depth 0: top-level items -->
+  <li
+    *ngIf="depth === 0"
+    class="slide"
+    [class.is-expanded]="hasChildren(menu) && isExpanded(menu.id)">
+
+    <a
+      *ngIf="hasChildren(menu)"
+      class="side-menu__item"
+      href="javascript:void(0);"
+      (click)="toggleMenu(menu.id)">
+      <span class="material-symbols-outlined side-menu__icon">{{ menu.icon }}</span>
+      <span class="side-menu__label">{{ menu.name }}</span>
+      <i class="angle fe fe-chevron-right"></i>
+    </a>
+
+    <a
+      *ngIf="!hasChildren(menu)"
+      class="side-menu__item"
+      [routerLink]="menu.route"
+      routerLinkActive="active">
+      <span class="material-symbols-outlined side-menu__icon">{{ menu.icon }}</span>
+      <span class="side-menu__label">{{ menu.name }}</span>
+    </a>
+
+    <ul
+      *ngIf="hasChildren(menu)"
+      class="slide-menu">
+      <app-sidebar
+        [menus]="menu.children"
+        [depth]="1">
+      </app-sidebar>
+    </ul>
+
+  </li>
+
+  <!-- Depth 1: second-level items -->
+  <li
+    *ngIf="depth === 1 && hasChildren(menu)"
+    class="sub-slide"
+    [class.is-expanded]="isExpanded(menu.id)">
+
+    <a
+      class="slide-item"
+      href="javascript:void(0);"
+      (click)="toggleMenu(menu.id)">
+      <span class="sub-side-menu__label">{{ menu.name }}</span>
+      <i class="sub-angle fe fe-chevron-right"></i>
+    </a>
+
+    <ul class="sub-slide-menu">
+      <app-sidebar
+        [menus]="menu.children"
+        [depth]="2">
+      </app-sidebar>
+    </ul>
+
+  </li>
+
+  <li *ngIf="depth === 1 && !hasChildren(menu)">
+    <a
+      class="slide-item"
+      [routerLink]="menu.route"
+      routerLinkActive="active">
+      {{ menu.name }}
+    </a>
+  </li>
+
+  <!-- Depth 2+: third-level items -->
+  <li *ngIf="depth >= 2">
+    <a
+      class="sub-side-menu__item"
+      [routerLink]="menu.route"
+      routerLinkActive="active">
+      {{ menu.name }}
+    </a>
+  </li>
+
+</ng-container>

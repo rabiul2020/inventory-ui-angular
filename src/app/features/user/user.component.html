@@ -1,0 +1,412 @@
+<div class="container-fluid py-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+      Users
+    </h2>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="openUserForm()">
+
+      <i class="fas fa-plus me-1"></i>
+      Add User
+
+    </button>
+
+  </div>
+
+
+  <!-- Messages -->
+
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success">
+
+    {{ successMessage }}
+
+  </div>
+
+
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger">
+
+    {{ errorMessage }}
+
+  </div>
+
+
+  <!-- User Form -->
+
+  <div
+    class="card mb-4"
+    *ngIf="showForm">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+
+        {{ editingUserId !== null
+            ? 'Edit User'
+            : 'Create User' }}
+
+      </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <form
+        [formGroup]="userForm"
+        (ngSubmit)="saveUser()"
+        novalidate>
+
+
+        <!-- User Name -->
+
+        <div class="mb-3">
+
+          <label
+            for="userName"
+            class="form-label">
+
+            User Name
+
+            <span class="text-danger">
+              *
+            </span>
+
+          </label>
+
+          <input
+            id="userName"
+            type="text"
+            class="form-control"
+            formControlName="userName"
+            placeholder="Enter user name">
+
+        </div>
+
+
+        <!-- Email -->
+
+        <div class="mb-3">
+
+          <label
+            for="email"
+            class="form-label">
+
+            Email
+
+            <span class="text-danger">
+              *
+            </span>
+
+          </label>
+
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            formControlName="email"
+            placeholder="Enter email">
+
+        </div>
+
+
+        <!-- Password -->
+
+        <div
+          class="mb-3"
+          *ngIf="editingUserId === null">
+
+          <label
+            for="password"
+            class="form-label">
+
+            Password
+
+            <span class="text-danger">
+              *
+            </span>
+
+          </label>
+
+          <input
+            id="password"
+            type="password"
+            class="form-control"
+            formControlName="password"
+            placeholder="Enter password">
+
+        </div>
+
+
+        <!-- Confirm Password -->
+
+        <div
+          class="mb-3"
+          *ngIf="editingUserId === null">
+
+          <label
+            for="confirmPassword"
+            class="form-label">
+
+            Confirm Password
+
+            <span class="text-danger">
+              *
+            </span>
+
+          </label>
+
+          <input
+            id="confirmPassword"
+            type="password"
+            class="form-control"
+            formControlName="confirmPassword"
+            placeholder="Confirm password">
+
+        </div>
+
+
+        <!-- Is Active -->
+
+        <div class="form-check mb-4">
+
+          <input
+            id="isActive"
+            type="checkbox"
+            class="form-check-input"
+            formControlName="isActive">
+
+          <label
+            for="isActive"
+            class="form-check-label">
+
+            Is Active
+
+          </label>
+
+        </div>
+
+
+        <!-- Roles -->
+
+        <div class="mb-4">
+
+          <label class="form-label fw-semibold">
+            Roles
+          </label>
+
+
+          <div
+            formArrayName="roles"
+            class="d-flex flex-wrap gap-4">
+
+            <div
+              class="form-check"
+              *ngFor="
+                let role of roles;
+                let i = index
+              ">
+
+              <input
+                type="checkbox"
+                class="form-check-input"
+                [formControlName]="i"
+                [id]="'role-' + role.id">
+
+              <label
+                class="form-check-label"
+                [for]="'role-' + role.id">
+
+                {{ role.name }}
+
+              </label>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Actions -->
+
+        <div
+          class="d-flex justify-content-end gap-2">
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="showForm = false">
+
+            <i class="fas fa-times me-1"></i>
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="userForm.invalid">
+
+            <i class="fas fa-save me-1"></i>
+
+            {{ editingUserId !== null
+                ? 'Update'
+                : 'Save' }}
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- User List -->
+
+  <div class="card">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+        User List
+      </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <div class="table-responsive">
+
+        <table
+          class="table table-bordered table-hover align-middle mb-0">
+
+          <thead class="table-light">
+
+            <tr>
+
+              <th>#</th>
+
+              <th>User Name</th>
+
+              <th>Email</th>
+
+              <th>Roles</th>
+
+              <th>Status</th>
+
+              <th>Actions</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let user of users;
+                let i = index
+              ">
+
+              <td>
+                {{ i + 1 }}
+              </td>
+
+              <td>
+                {{ user.userName }}
+              </td>
+
+              <td>
+                {{ user.email }}
+              </td>
+
+              <td>
+
+                <span
+                  *ngFor="
+                    let role of user.roles;
+                    let last = last
+                  ">
+
+                  {{ role }}<span
+                    *ngIf="!last">, </span>
+
+                </span>
+
+              </td>
+
+              <td>
+
+                <span
+                  class="badge"
+                  [ngClass]="
+                    user.isActive
+                      ? 'bg-success'
+                      : 'bg-secondary'
+                  ">
+
+                  {{ user.isActive
+                      ? 'Active'
+                      : 'Inactive' }}
+
+                </span>
+
+              </td>
+
+              <td>
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary"
+                  (click)="editUser(user.id)">
+
+                  <i class="fas fa-edit"></i>
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <tr
+              *ngIf="users.length === 0">
+
+              <td
+                colspan="6"
+                class="text-center text-muted py-4">
+
+                No users found.
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

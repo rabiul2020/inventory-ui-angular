@@ -1,0 +1,70 @@
+<div class="main-header side-header sticky">
+  <div class="main-container container-fluid">
+
+    <div class="main-header-left">
+
+      <div
+        class="app-sidebar__toggle"
+        (click)="toggleSidebar()">
+        <a class="open-toggle" href="javascript:void(0);">
+          <i class="header-icon fe fe-align-left"></i>
+        </a>
+        <a class="close-toggle" href="javascript:void(0);">
+          <i class="header-icon fe fe-x"></i>
+        </a>
+      </div>
+
+      <div class="main-header-center ms-4 d-none d-lg-block form-group">
+        <input
+          class="form-control"
+          placeholder="Search..."
+          type="search">
+        <button class="btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <div class="main-header-right">
+
+      <div class="dropdown main-profile-menu nav nav-item nav-link">
+
+        <a
+          href="javascript:void(0);"
+          class="d-flex"
+          data-bs-toggle="dropdown">
+          <span class="main-img-user">
+            <span class="material-symbols-outlined">account_circle</span>
+          </span>
+        </a>
+
+        <div class="dropdown-menu">
+
+          <div class="main-profile-menu-body">
+
+            <a
+              class="dropdown-item"
+              routerLink="/dashboard">
+              <span class="material-symbols-outlined me-2">dashboard</span>
+              Dashboard
+            </a>
+
+            <a
+              class="dropdown-item"
+              href="javascript:void(0);"
+              (click)="logout()">
+              <span class="material-symbols-outlined me-2">logout</span>
+              Sign Out
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* ------------------------------------------------------------------
+   Nowa theme layout fix
+   ------------------------------------------------------------------
+   .page is display:flex; flex-direction:column (from Nowa's style.css).
+   Its first child normally wraps the header + sidebar, but since BOTH
+   the header (.main-header) and sidebar (.app-sidebar) are
+   position:fixed, they don't contribute any height to normal flow.
+   That collapses the wrapper to 0px, so ".app-content" (the second
+   flex child) starts right at the very top of the page - underneath
+   the fixed header - instead of below it.
+
+   Fix: give that wrapper an explicit min-height matching the header's
+   real height (64px), so .app-content is naturally pushed down below
+   the header in the flex layout, instead of guessing a padding value.
+------------------------------------------------------------------ */
+.page-topbar-wrap {
+  min-height: 64px;
+}
+
+@media (max-width: 991px) {
+  .page-topbar-wrap {
+    min-height: 64px;
+  }
+}

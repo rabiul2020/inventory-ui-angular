@@ -1,0 +1,42 @@
+<div class="page">
+
+  <div class="page-topbar-wrap">
+
+    <app-header></app-header>
+
+    <div class="sticky">
+      <aside class="app-sidebar">
+
+        <div class="main-sidebar-header active">
+          <a
+            routerLink="/dashboard"
+            class="header-logo active">
+            <img
+              src="assets/nowa/img/brand/logo.png"
+              class="main-logo desktop-logo"
+              alt="logo">
+            <img
+              src="assets/nowa/img/brand/favicon.png"
+              class="main-logo mobile-logo"
+              alt="logo">
+          </a>
+        </div>
+
+        <div class="main-sidemenu">
+          <ul class="side-menu">
+            <app-sidebar [menus]="menus"></app-sidebar>
+          </ul>
+        </div>
+
+      </aside>
+    </div>
+
+  </div>
+
+  <div class="main-content app-content">
+    <div class="main-container container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+</div>

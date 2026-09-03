@@ -1,0 +1,108 @@
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+
+  <div class="card shadow-sm" style="width: 400px;">
+
+    <div class="card-body p-4">
+
+      <div class="text-center mb-4">
+
+        <h3 class="fw-bold">
+          Inventory Management
+        </h3>
+
+        <p class="text-muted mb-0">
+          Sign in to continue
+        </p>
+
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+        <!-- Username / Email -->
+
+        <div class="mb-3">
+
+          <label class="form-label">
+            Username or Email
+          </label>
+
+          <input
+            type="text"
+            class="form-control"
+            formControlName="userNameOrEmail"
+            placeholder="Enter username or email">
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="
+              loginForm.get('userNameOrEmail')?.touched &&
+              loginForm.get('userNameOrEmail')?.invalid
+            ">
+
+            Username or email is required.
+
+          </div>
+
+        </div>
+
+        <!-- Password -->
+
+        <div class="mb-3">
+
+          <label class="form-label">
+            Password
+          </label>
+
+          <input
+            type="password"
+            class="form-control"
+            formControlName="password"
+            placeholder="Enter password">
+
+          <div
+            class="text-danger small mt-1"
+            *ngIf="
+              loginForm.get('password')?.touched &&
+              loginForm.get('password')?.invalid
+            ">
+
+            Password is required.
+
+          </div>
+
+        </div>
+
+        <!-- Error -->
+
+        <div
+          *ngIf="errorMessage"
+          class="alert alert-danger">
+
+          {{ errorMessage }}
+
+        </div>
+
+        <!-- Login -->
+
+        <button
+          type="submit"
+          class="btn btn-primary w-100"
+          [disabled]="loading">
+
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm me-2">
+          </span>
+
+          {{ loading ? 'Signing in...' : 'Sign In' }}
+
+        </button>
+
+      </form>
+
+    </div>
+
+
+  </div>
+
+</div>

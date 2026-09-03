@@ -1,0 +1,19 @@
+.main-img-user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .material-symbols-outlined {
+    font-size: 28px;
+    color: #7b8191;
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+}
+
+.app-sidebar__toggle {
+  cursor: pointer;
+}

@@ -1,0 +1,625 @@
+<div class="container-fluid py-3">
+
+  <!-- Header -->
+  <div
+    class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+      Sales
+    </h2>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="openSalesForm()">
+
+      <i class="fas fa-plus me-1"></i>
+
+    </button>
+
+  </div>
+
+
+  <!-- Messages -->
+
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success alert-dismissible">
+
+    {{ successMessage }}
+
+    <button
+      type="button"
+      class="btn-close"
+      (click)="successMessage = ''">
+    </button>
+
+  </div>
+
+
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger alert-dismissible">
+
+    {{ errorMessage }}
+
+    <button
+      type="button"
+      class="btn-close"
+      (click)="errorMessage = ''">
+    </button>
+
+  </div>
+
+
+  <!-- Sales Form -->
+
+  <div
+    class="card mb-4"
+    *ngIf="showForm">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+
+        {{
+          editingSalesId !== null
+            ? 'Edit Sale'
+            : 'Add Sale'
+        }}
+
+      </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <form
+        [formGroup]="salesForm"
+        (ngSubmit)="saveSale()"
+        novalidate>
+
+
+        <!-- Sales Date + Customer -->
+
+        <div class="row">
+
+          <!-- Sales Date -->
+
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="salesDate"
+              class="form-label">
+
+              Sales Date
+
+              <span class="text-danger">
+                *
+              </span>
+
+            </label>
+
+            <input
+              id="salesDate"
+              type="date"
+              class="form-control"
+              formControlName="salesDate">
+
+          </div>
+
+
+          <!-- Customer -->
+
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="customerId"
+              class="form-label">
+
+              Customer
+
+              <span class="text-danger">
+                *
+              </span>
+
+            </label>
+
+            <select
+              id="customerId"
+              class="form-select"
+              formControlName="customerId">
+
+              <option [ngValue]="0">
+                Select Customer
+              </option>
+
+              <option
+                *ngFor="let customer of customers"
+                [ngValue]="customer.id">
+
+                {{ customer.name }}
+
+              </option>
+
+            </select>
+
+          </div>
+
+        </div>
+
+
+        <!-- Invoice Number -->
+
+        <div class="mb-3">
+
+          <label
+            for="invoiceNumber"
+            class="form-label">
+
+            Invoice Number
+
+          </label>
+
+          <input
+            id="invoiceNumber"
+            type="text"
+            class="form-control"
+            formControlName="invoiceNumber"
+            placeholder="Enter invoice number">
+
+        </div>
+
+
+        <!-- Remarks -->
+
+        <div class="mb-4">
+
+          <label
+            for="remarks"
+            class="form-label">
+
+            Remarks
+
+          </label>
+
+          <textarea
+            id="remarks"
+            class="form-control"
+            rows="2"
+            formControlName="remarks"
+            placeholder="Enter remarks">
+          </textarea>
+
+        </div>
+
+
+        <!-- Sales Details -->
+
+        <div
+          class="d-flex justify-content-between align-items-center mb-2">
+
+          <h5 class="mb-0">
+            Sales Items
+          </h5>
+
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            (click)="addSalesDetail()">
+
+            <i class="fas fa-plus me-1"></i>
+
+            Add Product
+
+          </button>
+
+        </div>
+
+
+        <!-- Details Table -->
+
+        <div class="table-responsive">
+
+          <table
+            class="table table-bordered align-middle">
+
+            <thead class="table-light">
+
+              <tr>
+
+                <th style="width: 25%;">
+                  Product
+                </th>
+
+                <th style="width: 13%;">
+                  Current Stock
+                </th>
+
+                <th style="width: 13%;">
+                  Cost Price
+                </th>
+
+                <th style="width: 13%;">
+                  Quantity
+                </th>
+
+                <th style="width: 13%;">
+                  Unit Price
+                </th>
+
+                <th style="width: 13%;">
+                  Amount
+                </th>
+
+                <th style="width: 10%;">
+                  Action
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody formArrayName="salesDetails">
+
+              <tr
+                *ngFor="
+                  let detail of salesDetails.controls;
+                  let i = index
+                "
+                [formGroupName]="i">
+
+
+                <!-- Product -->
+
+                <td>
+
+                  <select
+                    class="form-select"
+                    formControlName="productId"
+                    (change)="onProductChange(i)">
+
+                    <option [ngValue]="0">
+                      Select Product
+                    </option>
+
+                    <option
+                      *ngFor="let stock of stocks"
+                      [ngValue]="stock.productId">
+
+                      {{ stock.productName }}
+
+                    </option>
+
+                  </select>
+
+                </td>
+
+
+                <!-- Current Stock -->
+
+                <td class="text-end fw-semibold">
+
+                  {{ getCurrentStock(i) | number:'1.2-2' }}
+
+                </td>
+
+
+                <!-- Cost Price -->
+
+                <td class="text-end">
+
+                  {{ getCostPrice(i) | number:'1.2-2' }}
+
+                </td>
+
+
+                <!-- Quantity -->
+
+                <td>
+
+              <input
+                type="number"
+                class="form-control"
+                formControlName="quantity"
+                min="0.01"
+                step="0.01"
+                [max]="getCurrentStock(i)"
+                (input)="onQuantityChange(i)">
+
+                </td>
+
+
+                <!-- Unit Price -->
+
+                <td>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="unitPrice"
+                    min="0"
+                    step="0.01">
+
+                </td>
+
+
+                <!-- Amount -->
+
+                <td class="text-end fw-semibold">
+
+                  {{
+                    getDetailAmount(i)
+                    | number:'1.2-2'
+                  }}
+
+                </td>
+
+
+                <!-- Action -->
+
+                <td class="text-center">
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    (click)="removeSalesDetail(i)"
+                    [disabled]="salesDetails.length === 1">
+
+                    <i class="fas fa-trash"></i>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+
+              <!-- Empty -->
+
+              <tr
+                *ngIf="salesDetails.length === 0">
+
+                <td
+                  colspan="7"
+                  class="text-center text-muted py-3">
+
+                  No products added.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+
+          <!-- Total -->
+
+          <div
+            class="d-flex justify-content-end mt-3">
+
+            <div
+              class="border rounded p-3 bg-light"
+              style="min-width: 250px;">
+
+              <div class="text-muted">
+                Total Amount
+              </div>
+
+              <h4
+                class="mb-0 fw-bold text-end">
+
+                {{
+                  getTotalAmount()
+                  | number:'1.2-2'
+                }}
+
+              </h4>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Form Actions -->
+
+        <div
+          class="d-flex justify-content-end gap-2 mt-3">
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="showForm = false">
+
+            <i class="fas fa-times me-1"></i>
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="salesForm.invalid">
+
+            <i class="fas fa-save me-1"></i>
+
+            {{
+              editingSalesId !== null
+                ? 'Update'
+                : 'Save'
+            }}
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- ============================= -->
+  <!-- Sales List -->
+  <!-- ============================= -->
+
+  <div class="card">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+        Sales List
+      </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <div class="table-responsive">
+
+        <table
+          class="table table-bordered table-hover align-middle mb-0">
+
+          <thead class="table-light">
+
+            <tr>
+
+              <th>
+                #
+              </th>
+
+              <th>
+                Sales No.
+              </th>
+
+              <th>
+                Date
+              </th>
+
+              <th>
+                Customer
+              </th>
+
+              <th>
+                Invoice No.
+              </th>
+
+              <th>
+                Total Amount
+              </th>
+
+              <th>
+                Actions
+              </th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let sale of sales;
+                let i = index
+              ">
+
+              <td>
+                {{ i + 1 }}
+              </td>
+
+              <td>
+                {{ sale.salesNumber }}
+              </td>
+
+              <td>
+                {{
+                  sale.salesDate
+                  | date:'dd-MM-yyyy'
+                }}
+              </td>
+
+              <td>
+                {{ sale.customerName }}
+              </td>
+
+              <td>
+                {{ sale.invoiceNumber || '-' }}
+              </td>
+
+              <td class="fw-semibold">
+
+                {{
+                  sale.totalAmount
+                  | number:'1.2-2'
+                }}
+
+              </td>
+
+              <td class="text-nowrap">
+
+                <!-- Edit -->
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary me-2"
+                  (click)="editSale(sale.id)">
+
+                  <i class="fas fa-edit"></i>
+
+                </button>
+
+
+                <!-- Delete -->
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="deleteSale(sale.id)">
+
+                  <i class="fas fa-trash"></i>
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <!-- Empty -->
+
+            <tr
+              *ngIf="sales.length === 0">
+
+              <td
+                colspan="7"
+                class="text-center text-muted py-4">
+
+                No sales found.
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

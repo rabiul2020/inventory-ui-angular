@@ -1,0 +1,518 @@
+<div class="container-fluid py-3">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+      Stock Adjustments
+    </h2>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="openStockAdjustmentForm()">
+
+      <i class="fas fa-plus me-1"></i>
+
+      Add Adjustment
+
+    </button>
+
+  </div>
+
+
+  <!-- Messages -->
+
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success">
+
+    {{ successMessage }}
+
+  </div>
+
+
+  <div
+    *ngIf="errorMessage"
+    class="alert alert-danger">
+
+    {{ errorMessage }}
+
+  </div>
+
+
+  <!-- Adjustment Form -->
+
+  <div
+    class="card mb-4"
+    *ngIf="showForm">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+
+        {{ editingStockAdjustmentId !== null
+            ? 'Edit Stock Adjustment'
+            : 'Add Stock Adjustment' }}
+
+      </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <form
+        [formGroup]="stockAdjustmentForm"
+        (ngSubmit)="saveStockAdjustment()"
+        novalidate>
+
+
+        <!-- Date -->
+
+        <div class="row">
+
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="adjustmentDate"
+              class="form-label">
+
+              Adjustment Date
+
+              <span class="text-danger">
+                *
+              </span>
+
+            </label>
+
+            <input
+              id="adjustmentDate"
+              type="date"
+              class="form-control"
+              formControlName="adjustmentDate">
+
+          </div>
+
+        </div>
+
+
+        <!-- Details -->
+
+        <div
+          class="d-flex justify-content-between align-items-center mb-2">
+
+          <h5 class="mb-0">
+            Adjustment Items
+          </h5>
+
+
+          <button
+            type="button"
+            class="btn btn-sm btn-primary"
+            (click)="addStockAdjustmentDetail()">
+
+            <i class="fas fa-plus me-1"></i>
+
+            Add Item
+
+          </button>
+
+        </div>
+
+
+        <!-- Details Table -->
+
+        <div class="table-responsive">
+
+          <table
+            class="table table-bordered align-middle">
+
+            <thead class="table-light">
+
+              <tr>
+
+                <th style="width: 25%;">
+                  Product
+                </th>
+
+                <th style="width: 15%;">
+                  Quantity
+                </th>
+
+                <th style="width: 20%;">
+                  Adjustment Type
+                </th>
+
+                <th style="width: 30%;">
+                  Reason
+                </th>
+
+                <th style="width: 10%;">
+                  Action
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody
+              formArrayName="details">
+
+              <tr
+                *ngFor="
+                  let detail of stockAdjustmentDetails.controls;
+                  let i = index
+                "
+                [formGroupName]="i">
+
+
+                <!-- Product -->
+
+                <td>
+
+                  <select
+                    class="form-select"
+                    formControlName="productId">
+
+                    <option [ngValue]="0">
+                      Select Product
+                    </option>
+
+                    <option
+                      *ngFor="let product of products"
+                      [ngValue]="product.id">
+
+                      {{ product.name }}
+
+                    </option>
+
+                  </select>
+
+                </td>
+
+
+                <!-- Quantity -->
+
+                <td>
+
+                  <input
+                    type="number"
+                    class="form-control"
+                    formControlName="quantity"
+                    min="0.01"
+                    step="0.01">
+
+                </td>
+
+
+                <!-- Adjustment Type -->
+
+                <td>
+
+                  <select
+                    class="form-select"
+                    formControlName="isIncrease">
+
+                    <option [ngValue]="true">
+                      Increase
+                    </option>
+
+                    <option [ngValue]="false">
+                      Decrease
+                    </option>
+
+                  </select>
+
+                </td>
+
+
+                <!-- Reason -->
+
+                <td>
+
+                  <input
+                    type="text"
+                    class="form-control"
+                    formControlName="reason"
+                    placeholder="Enter reason">
+
+                </td>
+
+
+                <!-- Remove -->
+
+                <td class="text-center">
+
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-danger"
+                    (click)="
+                      removeStockAdjustmentDetail(i)
+                    "
+                    [disabled]="
+                      stockAdjustmentDetails.length === 1
+                    ">
+
+                    <i class="fas fa-trash"></i>
+
+                  </button>
+
+                </td>
+
+              </tr>
+
+
+              <!-- Empty -->
+
+              <tr
+                *ngIf="
+                  stockAdjustmentDetails.length === 0
+                ">
+
+                <td
+                  colspan="5"
+                  class="text-center text-muted py-4">
+
+                  No adjustment items added.
+
+                </td>
+
+              </tr>
+
+            </tbody>
+
+          </table>
+
+
+          <!-- Total Quantity -->
+
+          <div
+            class="d-flex justify-content-end mt-3">
+
+            <div
+              class="border rounded p-3 bg-light"
+              style="min-width: 250px;">
+
+              <div class="text-muted">
+                Total Quantity
+              </div>
+
+              <h4
+                class="mb-0 fw-bold text-end">
+
+                {{ getTotalQuantity()
+                   | number:'1.2-2' }}
+
+              </h4>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Remarks -->
+
+        <div
+          class="mb-4 mt-3">
+
+          <label
+            for="remarks"
+            class="form-label">
+
+            Remarks
+
+          </label>
+
+          <textarea
+            id="remarks"
+            class="form-control"
+            rows="2"
+            formControlName="remarks"
+            placeholder="Enter remarks">
+          </textarea>
+
+        </div>
+
+
+        <!-- Form Actions -->
+
+        <div
+          class="d-flex justify-content-end gap-2">
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="showForm = false">
+
+            <i class="fas fa-times me-1"></i>
+
+            Cancel
+
+          </button>
+
+
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="
+              stockAdjustmentForm.invalid ||
+              stockAdjustmentDetails.length === 0
+            ">
+
+            <i class="fas fa-save me-1"></i>
+
+            {{ editingStockAdjustmentId !== null
+                ? 'Update'
+                : 'Save' }}
+
+          </button>
+
+        </div>
+
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- Stock Adjustment List -->
+
+  <div class="card">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+        Stock Adjustment List
+      </h5>
+
+    </div>
+
+
+    <div class="card-body">
+
+      <div class="table-responsive">
+
+        <table
+          class="table table-bordered table-hover align-middle mb-0">
+
+          <thead class="table-light">
+
+            <tr>
+
+              <th>#</th>
+
+              <th>Adjustment No.</th>
+
+              <th>Date</th>
+
+              <th>Total Quantity</th>
+
+              <th>Remarks</th>
+
+              <th>Actions</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let adjustment of stockAdjustments;
+                let i = index
+              ">
+
+              <td>
+                {{ i + 1 }}
+              </td>
+
+              <td>
+                {{ adjustment.adjustmentNumber }}
+              </td>
+
+              <td>
+                {{ adjustment.adjustmentDate
+                   | date:'dd-MM-yyyy' }}
+              </td>
+
+              <td class="fw-semibold">
+
+                {{ adjustment.totalQuantity
+                   | number:'1.2-2' }}
+
+              </td>
+
+              <td>
+                {{ adjustment.remarks || '-' }}
+              </td>
+
+              <td class="text-nowrap">
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary me-2"
+                  (click)="
+                    editStockAdjustment(
+                      adjustment.id
+                    )
+                  ">
+
+                  <i class="fas fa-edit"></i>
+
+                </button>
+
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger"
+                  (click)="
+                    deleteStockAdjustment(
+                      adjustment.id
+                    )
+                  ">
+
+                  <i class="fas fa-trash"></i>
+
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <!-- Empty -->
+
+            <tr
+              *ngIf="
+                stockAdjustments.length === 0
+              ">
+
+              <td
+                colspan="6"
+                class="text-center text-muted py-4">
+
+                No stock adjustments found.
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

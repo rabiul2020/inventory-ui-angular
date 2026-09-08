@@ -1,0 +1,74 @@
+<div class="sidebar">
+
+  <div
+    class="menu-item"
+    *ngFor="let menu of menus">
+
+    <!-- ========================= -->
+    <!-- Parent Menu -->
+    <!-- ========================= -->
+
+    <div
+      *ngIf="menu.children && menu.children.length > 0"
+      class="menu-parent"
+      (click)="toggleMenu(menu.id)">
+
+      <div class="menu-left">
+
+        <span class="material-symbols-outlined menu-icon">
+          {{ menu.icon }}
+        </span>
+
+        <span class="menu-name">
+          {{ menu.name }}
+        </span>
+
+      </div>
+
+      <span
+        class="material-symbols-outlined arrow"
+        [class.expanded]="isExpanded(menu.id)">
+        chevron_right
+      </span>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Children -->
+    <!-- ========================= -->
+
+    <div
+      *ngIf="menu.children && menu.children.length > 0 && isExpanded(menu.id)"
+      class="submenu">
+
+      <app-sidebar
+        [menus]="menu.children">
+      </app-sidebar>
+
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- Leaf Menu -->
+    <!-- ========================= -->
+
+    <a
+      *ngIf="!menu.children || menu.children.length === 0"
+      [routerLink]="menu.route"
+      routerLinkActive="active"
+      class="menu-link">
+
+      <span class="material-symbols-outlined menu-icon">
+        {{ menu.icon }}
+      </span>
+
+      <span class="menu-name">
+        {{ menu.name }}
+      </span>
+
+    </a>
+
+  </div>
+
+</div>

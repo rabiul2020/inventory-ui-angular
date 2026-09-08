@@ -1,0 +1,503 @@
+
+<div class="container-fluid py-3">
+
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+
+
+    <!-- Success Message -->
+<div
+  *ngIf="successMessage"
+  class="alert alert-success alert-dismissible fade show"
+  role="alert">
+
+  <i class="fas fa-check-circle me-1"></i>
+
+  {{ successMessage }}
+
+  <button
+    type="button"
+    class="btn-close"
+    (click)="successMessage = ''">
+  </button>
+
+</div>
+
+
+<!-- Error Message -->
+<div
+  *ngIf="errorMessage"
+  class="alert alert-danger alert-dismissible fade show"
+  role="alert">
+
+  <i class="fas fa-exclamation-circle me-1"></i>
+
+  {{ errorMessage }}
+
+  <button
+    type="button"
+    class="btn-close"
+    (click)="errorMessage = ''">
+  </button>
+
+</div>
+
+
+    <h2 class="mb-0">
+      Suppliers
+    </h2>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="
+        editingSupplierId = null;
+        showForm = true;
+        supplierForm.reset({
+          name: '',
+          contactPerson: '',
+          phone: '',
+          email: '',
+          address: '',
+          isActive: true
+        });
+      ">
+
+      <i class="fas fa-plus me-1"></i>
+    </button>
+
+  </div>
+
+
+  <!-- Supplier Form -->
+  <div
+    class="card mb-4"
+    *ngIf="showForm">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+        {{ editingSupplierId !== null ? 'Edit Supplier' : 'Add Supplier' }}
+      </h5>
+
+    </div>
+
+    <div class="card-body">
+
+      <form
+        [formGroup]="supplierForm"
+        (ngSubmit)="saveSupplier()"
+        novalidate>
+
+
+        <!-- Name + Contact Person -->
+        <div class="row">
+
+          <!-- Name -->
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="name"
+              class="form-label">
+
+              Supplier Name
+              <span class="text-danger">*</span>
+
+            </label>
+
+            <input
+              id="name"
+              type="text"
+              class="form-control"
+              formControlName="name"
+              [class.is-invalid]="
+                supplierForm.get('name')?.invalid &&
+                supplierForm.get('name')?.touched
+              "
+              placeholder="Enter supplier name">
+
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                supplierForm.get('name')?.hasError('required') &&
+                supplierForm.get('name')?.touched
+              ">
+
+              Supplier name is required.
+
+            </div>
+
+          </div>
+
+
+          <!-- Contact Person -->
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="contactPerson"
+              class="form-label">
+
+              Contact Person
+
+            </label>
+
+            <input
+              id="contactPerson"
+              type="text"
+              class="form-control"
+              formControlName="contactPerson"
+              placeholder="Enter contact person">
+
+          </div>
+
+        </div>
+
+
+        <!-- Phone + Email -->
+        <div class="row">
+
+          <!-- Phone -->
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="phone"
+              class="form-label">
+
+              Phone
+
+            </label>
+
+            <input
+              id="phone"
+              type="text"
+              class="form-control"
+              formControlName="phone"
+              placeholder="Enter phone number">
+
+          </div>
+
+
+          <!-- Email -->
+          <div class="col-md-6 mb-3">
+
+            <label
+              for="email"
+              class="form-label">
+
+              Email
+
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              class="form-control"
+              formControlName="email"
+              [class.is-invalid]="
+                supplierForm.get('email')?.invalid &&
+                supplierForm.get('email')?.touched
+              "
+              placeholder="Enter email address">
+
+            <div
+              class="invalid-feedback"
+              *ngIf="
+                supplierForm.get('email')?.hasError('email') &&
+                supplierForm.get('email')?.touched
+              ">
+
+              Please enter a valid email address.
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- Address -->
+        <div class="mb-3">
+
+          <label
+            for="address"
+            class="form-label">
+
+            Address
+
+          </label>
+
+          <textarea
+            id="address"
+            class="form-control"
+            rows="3"
+            formControlName="address"
+            placeholder="Enter supplier address">
+          </textarea>
+
+        </div>
+
+
+        <!-- Active -->
+        <div class="form-check mb-3">
+
+          <input
+            id="isActive"
+            type="checkbox"
+            class="form-check-input"
+            formControlName="isActive">
+
+          <label
+            for="isActive"
+            class="form-check-label">
+
+            Active Supplier
+
+          </label>
+
+        </div>
+
+
+        <!-- Buttons -->
+        <div class="d-flex gap-2">
+
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="supplierForm.invalid">
+
+            <i class="fas fa-save me-1"></i>
+
+            {{ editingSupplierId !== null ? 'Update' : 'Save' }}
+
+          </button>
+
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="showForm = false">
+
+            <i class="fas fa-times me-1"></i>
+
+            Cancel
+
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+
+  </div>
+
+
+  <!-- Supplier List -->
+  <div class="card">
+
+    <div class="card-header">
+
+      <h5 class="mb-0">
+        Supplier List
+      </h5>
+
+    </div>
+
+    <div class="card-body">
+
+      <div class="table-responsive">
+
+        <table
+          class="table table-bordered table-hover align-middle mb-0">
+
+          <thead class="table-light">
+
+            <tr>
+              <th>#</th>
+              <th>Name</th>
+              <th>Contact Person</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Address</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            <tr
+              *ngFor="
+                let supplier of suppliers;
+                let i = index
+              ">
+
+              <td>
+                {{ i + 1 }}
+              </td>
+
+              <td>
+                {{ supplier.name }}
+              </td>
+
+              <td>
+                {{ supplier.contactPerson || '-' }}
+              </td>
+
+              <td>
+                {{ supplier.phone || '-' }}
+              </td>
+
+              <td>
+                {{ supplier.email || '-' }}
+              </td>
+
+              <td>
+                {{ supplier.address || '-' }}
+              </td>
+
+              <td>
+
+                <span
+                  class="badge"
+                  [class.bg-success]="supplier.isActive"
+                  [class.bg-secondary]="!supplier.isActive">
+
+                  {{ supplier.isActive ? 'Active' : 'Inactive' }}
+
+                </span>
+
+              </td>
+
+              <td class="text-nowrap">
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-primary me-2" (click)="editSupplier(supplier.id)">
+
+                  <i class="fas fa-edit"></i>
+                </button>
+
+                <button
+                  type="button"
+                  class="btn btn-sm btn-danger" (click)="deleteSupplier(supplier.id)">
+                  <i class="fas fa-trash"></i>
+                </button>
+
+              </td>
+
+            </tr>
+
+
+            <!-- Empty -->
+            <tr
+              *ngIf="suppliers.length === 0">
+
+              <td
+                colspan="8"
+                class="text-center text-muted py-4">
+
+                No suppliers found.
+
+              </td>
+
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<!-- Delete Confirmation Modal -->
+<div
+  class="modal fade show"
+  *ngIf="showDeleteModal"
+  style="display: block;"
+  tabindex="-1">
+
+  <div class="modal-dialog modal-dialog-centered">
+
+    <div class="modal-content">
+
+      <div class="modal-header">
+
+        <h5 class="modal-title">
+          Delete Supplier
+        </h5>
+
+        <button
+          type="button"
+          class="btn-close"
+          (click)="cancelDelete()">
+        </button>
+
+      </div>
+
+
+      <div class="modal-body text-center py-4">
+
+        <i
+          class="fas fa-trash-alt text-danger"
+          style="font-size: 48px;">
+        </i>
+
+        <h5 class="mt-3">
+          Are you sure?
+        </h5>
+
+        <p class="text-muted mb-0">
+          This supplier will be permanently deleted.
+        </p>
+
+      </div>
+
+
+      <div class="modal-footer">
+
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="cancelDelete()">
+
+          <i class="fas fa-times me-1"></i>
+
+          Cancel
+
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-danger"
+          (click)="confirmDelete()">
+
+          <i class="fas fa-trash me-1"></i>
+
+          Delete
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- Modal Backdrop -->
+<div
+  class="modal-backdrop fade show"
+  *ngIf="showDeleteModal">
+</div>
+
+
